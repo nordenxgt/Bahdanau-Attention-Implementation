@@ -12,7 +12,8 @@ class Encoder(nn.Module):
     def forward(self, input: torch.Tensor) -> torch.Tensor:
         embedded = self.dropout(self.embedding(input))
         output, hidden = self.rnn(embedded)
-        hidden = torch.tanh(
-            self.fc(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))
-        )
+        
+        # get the hidden state bidirectional RNN (forwards and backwards)
+        hidden = torch.tanh(self.fc(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1)))
+        
         return output, hidden
